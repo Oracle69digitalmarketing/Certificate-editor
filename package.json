@@ -1,6 +1,7 @@
 {
   "name": "noun-certificate-editor",
   "version": "1.0.0",
+  "author": "Oracle69 Systems",
   "type": "module",
   "license": "MIT",
   "scripts": {

@@ -57,6 +57,10 @@ Document Engine V2 is a high-performance, browser-based PDF layout analysis and 
    pnpm run dev
    ```
 
+## 👨‍💻 Author
+
+Developed by **Oracle69 Systems**.
+
 ## 📜 License
 
 MIT License. See `LICENSE` for details.
