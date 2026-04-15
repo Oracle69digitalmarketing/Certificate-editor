@@ -1,0 +1,122 @@
+# Blueprint for deploying the entire Certificate Editor + Paperless-ngx stack on Render
+services:
+  # ----------------------------------------------------------------------
+  # 1. Surgical PDF Editor (Flask + React)
+  # ----------------------------------------------------------------------
+  - type: web
+    name: certificate-editor
+    runtime: docker
+    repo: https://github.com/Oracle69digitalmarketing/Certificate-editor
+    branch: main
+    plan: starter
+    healthCheckPath: /api/health
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: PAPERLESS_URL
+        fromService:
+          name: paperless-ngx
+          type: web
+          property: url
+      - key: PAPERLESS_TOKEN
+        sync: false # Set manually in Render dashboard
+      - key: PAPERLESS_CUSTOM_FIELD_ID_CERT_NUMBER
+        value: "1"
+      - key: PAPERLESS_CUSTOM_FIELD_ID_ISSUE_DATE
+        value: "2"
+      - key: PAPERLESS_CUSTOM_FIELD_ID_RECIPIENT
+        value: "3"
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PORT
+        value: "5001"
+
+  # ----------------------------------------------------------------------
+  # 2. Paperless-ngx (Document Management)
+  # ----------------------------------------------------------------------
+  - type: web
+    name: paperless-ngx
+    runtime: docker
+    repo: https://github.com/paperless-ngx/paperless-ngx
+    branch: main
+    plan: starter
+    healthCheckPath: /api/
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    # Persistent storage for documents
+    disk:
+      name: paperless-storage
+      mountPath: /render-data
+      sizeGB: 10
+    envVars:
+      - key: PAPERLESS_SECRET_KEY
+        generateValue: true
+      - key: PAPERLESS_URL
+        fromService:
+          name: paperless-ngx
+          type: web
+          property: url
+      - key: PAPERLESS_TIME_ZONE
+        value: UTC
+      - key: PAPERLESS_OCR_LANGUAGE
+        value: eng
+      - key: PAPERLESS_OCR_MODE
+        value: skip
+      # Map internal directories to the persistent disk
+      - key: PAPERLESS_DATA_DIR
+        value: /render-data/data
+      - key: PAPERLESS_MEDIA_DIR
+        value: /render-data/media
+      - key: PAPERLESS_CONSUMPTION_DIR
+        value: /render-data/consume
+      # Redis connection
+      - key: PAPERLESS_REDIS
+        fromService:
+          name: paperless-redis
+          type: redis
+          property: connectionString
+      # PostgreSQL connection
+      - key: PAPERLESS_DBHOST
+        fromDatabase:
+          name: paperless-db
+          property: host
+      - key: PAPERLESS_DBNAME
+        fromDatabase:
+          name: paperless-db
+          property: database
+      - key: PAPERLESS_DBUSER
+        fromDatabase:
+          name: paperless-db
+          property: user
+      - key: PAPERLESS_DBPASS
+        fromDatabase:
+          name: paperless-db
+          property: password
+      - key: PAPERLESS_DBPORT
+        fromDatabase:
+          name: paperless-db
+          property: port
+      # Admin credentials
+      - key: PAPERLESS_ADMIN_USER
+        value: admin
+      - key: PAPERLESS_ADMIN_MAIL
+        value: admin@example.com
+      - key: PAPERLESS_ADMIN_PASSWORD
+        generateValue: true
+
+  # ----------------------------------------------------------------------
+  # 3. Redis
+  # ----------------------------------------------------------------------
+  - type: redis
+    name: paperless-redis
+    plan: free
+    ipAllowList: []
+
+# ----------------------------------------------------------------------
+# 4. PostgreSQL
+# ----------------------------------------------------------------------
+databases:
+  - name: paperless-db
+    plan: free

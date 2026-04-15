@@ -177,5 +177,9 @@ def serve_react(path):
         return send_from_directory(static_folder, 'index.html')
     return "Frontend not built. Run 'npm run build' first.", 404
 
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=False)
