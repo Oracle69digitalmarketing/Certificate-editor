@@ -1,4 +1,5 @@
 # Blueprint for deploying the entire Certificate Editor + Paperless-ngx stack on Render
+name: surgical-pdf-engine-v2-stack
 services:
   # ----------------------------------------------------------------------
   # 1. Surgical PDF Editor (Flask + React)
