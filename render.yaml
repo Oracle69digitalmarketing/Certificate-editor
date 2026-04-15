@@ -1,5 +1,4 @@
 # Blueprint for deploying the entire Certificate Editor + Paperless-ngx stack on Render
-name: surgical-pdf-engine-v2-stack
 services:
   # ----------------------------------------------------------------------
   # 1. Surgical PDF Editor (Flask + React)
@@ -52,7 +51,7 @@ services:
       - key: PAPERLESS_SECRET_KEY
         generateValue: true
       - key: PAPERLESS_URL
-        sync: false # Set to your public Render URL (https://...onrender.com) after deploy
+        sync: false # Set to your public Render URL after deploy
       - key: PAPERLESS_TIME_ZONE
         value: UTC
       - key: PAPERLESS_OCR_LANGUAGE
@@ -62,7 +61,7 @@ services:
       # Map internal directories to the persistent disk
       - key: PAPERLESS_DATA_DIR
         value: /render-data/data
-      - key: PAPERLESS_MEDIA_DIR
+      - key: PAPERLESS_MEDIA_ROOT
         value: /render-data/media
       - key: PAPERLESS_CONSUMPTION_DIR
         value: /render-data/consume
