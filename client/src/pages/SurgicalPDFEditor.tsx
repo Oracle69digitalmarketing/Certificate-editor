@@ -29,6 +29,7 @@ export default function SurgicalPDFEditor() {
     reset,
     originalPdfBytes,
     fields,
+    ocrText,
     debug,
     toggleDebug,
   } = useSurgicalPDFStore();
@@ -141,11 +142,12 @@ export default function SurgicalPDFEditor() {
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       formData.append("file", blob, `Surgical_Edit_${Date.now()}.pdf`);
       
-      // Send extracted metadata
+      // Send extracted metadata and full OCR text
       const metadata = {
         fields: fields.map(f => ({ type: f.type, value: f.value }))
       };
       formData.append("metadata", JSON.stringify(metadata));
+      formData.append("ocr_text", ocrText);
 
       const response = await fetch("http://localhost:5001/paperless/upload", {
         method: "POST",

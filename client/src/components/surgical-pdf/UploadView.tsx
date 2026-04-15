@@ -12,7 +12,7 @@ export function UploadView() {
   const [ocrEngine, setOcrEngine] = useState<'tesseract' | 'paddle' | 'easyocr'>('tesseract');
   const [scanProgress, setScanProgress] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { loadTemplate, addScanLog, activateField } = useSurgicalPDFStore();
+  const { loadTemplate, addScanLog, activateField, setOcrText } = useSurgicalPDFStore();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     let file = event.target.files?.[0];
@@ -168,6 +168,9 @@ export function UploadView() {
         const worker = await Tesseract.createWorker("eng");
         const ocrResult = await worker.recognize(bgImage) as any;
         addScanLog(`OCR Found: ${ocrResult.data.words.length} tokens`);
+        
+        // Save full OCR text for metadata extraction later
+        setOcrText(ocrResult.data.text);
 
         ocrResult.data.words.forEach((word: any, idx: number) => {
           // ADVANCED CONFIDENCE FILTERING: Filter out noise (confidence > 60%)
@@ -204,6 +207,12 @@ export function UploadView() {
 
       addScanLog(`Filtered: ${scannedElements.length}`);
       loadTemplate(bgImage, pdfBytesCopy, pdfWidth, pdfHeight, scannedElements);
+
+      // Save native text for metadata extraction
+      if (scannedElements.length > 0) {
+        const fullText = textContent.items.map((item: any) => item.str).join(" ");
+        setOcrText(fullText);
+      }
 
       if (scannedElements.length > 0) {
         setTimeout(() => {

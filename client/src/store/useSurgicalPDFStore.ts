@@ -31,11 +31,13 @@ interface EditorState {
   fields: EditableField[];
   scannedElements: EditableField[];
   selectedId: string | null;
+  ocrText: string;
   scanLog: string[];
   
   setStep: (step: EditorStep) => void;
   toggleDebug: () => void;
   loadTemplate: (image: string, bytes: ArrayBuffer, width: number, height: number, scannedElements: EditableField[]) => void;
+  setOcrText: (text: string) => void;
   activateField: (id: string) => void;
   updateField: (id: string, updates: Partial<EditableField>) => void;
   updatePosition: (id: string, x: number, y: number) => void;
@@ -56,12 +58,14 @@ export const useSurgicalPDFStore = create<EditorState>((set) => ({
   fields: [],
   scannedElements: [],
   selectedId: null,
+  ocrText: "",
   scanLog: [],
 
   setStep: (step) => set({ step }),
   toggleDebug: () => set((state) => ({ debug: !state.debug })),
   loadTemplate: (templateImage, originalPdfBytes, pdfWidth, pdfHeight, scannedElements) => 
     set({ step: "scan", templateImage, originalPdfBytes, pdfWidth, pdfHeight, scannedElements, fields: [] }),
+  setOcrText: (ocrText) => set({ ocrText }),
   activateField: (id) => set((state) => {
     const field = state.scannedElements.find(f => f.id === id);
     if (!field || state.fields.find(f => f.id === id)) return state;

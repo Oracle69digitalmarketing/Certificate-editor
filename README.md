@@ -26,6 +26,15 @@ Surgical PDF Engine V2 is a high-precision document modification tool designed f
 For Paperless-ngx integration, set the following variables in your environment or Docker container:
 - `PAPERLESS_URL`: Your Paperless instance URL (e.g., `https://paperless.example.com`).
 - `PAPERLESS_TOKEN`: Your API Secret Token.
+- `PAPERLESS_CUSTOM_FIELD_ID_CERT_NUMBER`: ID of the custom field for Certificate Number.
+- `PAPERLESS_CUSTOM_FIELD_ID_ISSUE_DATE`: ID of the custom field for Issue Date.
+- `PAPERLESS_CUSTOM_FIELD_ID_RECIPIENT`: ID of the custom field for Recipient Name.
+
+### Finding Custom Field IDs
+You can find these IDs by querying the Paperless API:
+```bash
+curl -H "Authorization: Token YOUR_TOKEN" https://paperless.example.com/api/custom_fields/
+```
 
 ## 📦 Installation & Setup
 
