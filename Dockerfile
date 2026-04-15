@@ -1,22 +1,19 @@
 # Stage 1: Build React frontend
 FROM node:20-alpine AS builder
 
-# Install pnpm globally
-RUN npm install -g pnpm
-
 WORKDIR /app
 
 # Copy root package files
-COPY package.json pnpm-lock.yaml ./
+COPY package*.json ./
 
-# Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile
+# Install dependencies using npm (more stable for some environments)
+RUN npm install --legacy-peer-deps
 
 # Copy the entire project
 COPY . .
 
 # Build the app (Vite is configured to output to dist/public)
-RUN pnpm run build
+RUN npm run build
 
 # Stage 2: Final Python image with Flask and ocrmypdf
 FROM python:3.11-slim-bookworm
@@ -45,7 +42,6 @@ RUN pip install --no-cache-dir -r server/requirements.txt
 COPY server/ ./server/
 
 # Copy built frontend static files from Stage 1
-# Vite outputs to dist/public based on your vite.config.ts
 COPY --from=builder /app/dist ./dist
 
 # Environment variables
