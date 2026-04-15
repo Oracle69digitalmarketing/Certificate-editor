@@ -14,9 +14,9 @@ services:
     dockerContext: .
     envVars:
       - key: PAPERLESS_URL
-        value: http://paperless-ngx:8000 # Internal Render communication
+        value: http://paperless-ngx:8000
       - key: PAPERLESS_TOKEN
-        sync: false # Set manually in Render dashboard
+        sync: false
       - key: PAPERLESS_CUSTOM_FIELD_ID_CERT_NUMBER
         value: "1"
       - key: PAPERLESS_CUSTOM_FIELD_ID_ISSUE_DATE
@@ -42,29 +42,17 @@ services:
     healthCheckPath: /api/
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    # Persistent storage for documents
-    disk:
-      name: paperless-storage
-      mountPath: /render-data
-      sizeGB: 10
     envVars:
       - key: PAPERLESS_SECRET_KEY
         generateValue: true
       - key: PAPERLESS_URL
-        sync: false # Set to your public Render URL after deploy
+        sync: false
       - key: PAPERLESS_TIME_ZONE
         value: UTC
       - key: PAPERLESS_OCR_LANGUAGE
         value: eng
       - key: PAPERLESS_OCR_MODE
         value: skip
-      # Map internal directories to the persistent disk
-      - key: PAPERLESS_DATA_DIR
-        value: /render-data/data
-      - key: PAPERLESS_MEDIA_ROOT
-        value: /render-data/media
-      - key: PAPERLESS_CONSUMPTION_DIR
-        value: /render-data/consume
       # Redis connection
       - key: PAPERLESS_REDIS
         fromService:
