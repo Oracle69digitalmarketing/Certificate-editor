@@ -15,10 +15,7 @@ services:
     dockerContext: .
     envVars:
       - key: PAPERLESS_URL
-        fromService:
-          name: paperless-ngx
-          type: web
-          property: url
+        value: http://paperless-ngx:8000 # Internal Render communication
       - key: PAPERLESS_TOKEN
         sync: false # Set manually in Render dashboard
       - key: PAPERLESS_CUSTOM_FIELD_ID_CERT_NUMBER
@@ -55,10 +52,7 @@ services:
       - key: PAPERLESS_SECRET_KEY
         generateValue: true
       - key: PAPERLESS_URL
-        fromService:
-          name: paperless-ngx
-          type: web
-          property: url
+        sync: false # Set to your public Render URL (https://...onrender.com) after deploy
       - key: PAPERLESS_TIME_ZONE
         value: UTC
       - key: PAPERLESS_OCR_LANGUAGE
