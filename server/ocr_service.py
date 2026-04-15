@@ -168,7 +168,7 @@ def upload_to_paperless():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react(path):
-    static_folder = os.path.join(os.path.dirname(__file__), '../client/dist')
+    static_folder = os.path.join(os.path.dirname(__file__), '../dist/public')
     file_path = os.path.join(static_folder, path)
     if path and os.path.isfile(file_path):
         return send_from_directory(static_folder, path)

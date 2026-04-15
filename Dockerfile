@@ -1,10 +1,10 @@
-# Stage 1: Build React frontend
-FROM node:20-alpine AS frontend-builder
-WORKDIR /app/client
-COPY client/package*.json ./
-# Use npm since pnpm might not be in the default alpine image
+# Stage 1: Build React frontend and Node.js backend
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json pnpm-lock.yaml* ./
+# Install all dependencies (frontend + backend)
 RUN npm install
-COPY client/ ./
+COPY . .
 RUN npm run build
 
 # Stage 2: Final Python image with Flask and ocrmypdf
@@ -27,14 +27,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Copy Python requirements and install
-COPY server/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY server/requirements.txt ./server/
+RUN pip install --no-cache-dir -r server/requirements.txt
 
 # Copy Flask service code
 COPY server/ ./server/
 
-# Copy built frontend static files from stage 1
-COPY --from=frontend-builder /app/client/dist ./client/dist
+# Copy built files from stage 1 (Vite outputs to dist/public)
+COPY --from=builder /app/dist ./dist
 
 # Expose port for Flask
 EXPOSE 5001
@@ -43,5 +43,5 @@ EXPOSE 5001
 ENV FLASK_ENV=production
 ENV PYTHONUNBUFFERED=1
 
-# Run the Flask app (which now also serves the frontend)
+# Run the Flask app (which now also serves the frontend from dist/public)
 CMD ["python", "server/ocr_service.py"]
