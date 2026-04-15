@@ -1,66 +1,51 @@
-# Document Engine V2: Precision Vector Layout Reconstructor
+# Surgical PDF Engine V2
 
-Document Engine V2 is a high-performance, browser-based PDF layout analysis and modification system. Designed for extreme precision, it reconstructs native PDF vector layers into an interactive DOM-mapped workspace, allowing for surgical edits with absolute 1:1 coordinate accuracy.
+**Absolute Vector-Level PDF Surgery & OCR-Powered Layout Reconstruction.**
 
-## 🚀 Key Features
+Surgical PDF Engine V2 is a high-precision document modification tool designed for professional-grade PDF editing. Unlike standard editors that treat PDFs as flat images, Surgical PDF Engine reconstructs the underlying vector layout, allowing for surgical precision in text replacement and element positioning.
 
-- **Strict Vector Parsing:** Utilizes a custom reconstruction engine to extract text nodes, font matrices, and absolute coordinates directly from the PDF's native stream.
-- **Dynamic 1:1 Coordinate Mapping:** Ensures that every interaction on the viewport translates perfectly to PDF points (pt), maintaining layout integrity across all devices.
-- **Intelligent Field Detection:** Employs rule-based heuristics to automatically identify and categorize certificate fields such as Names, Degrees, Dates, and Serial IDs.
-- **Smart Masking Technology:** Implements opaque vector overlays to seamlessly "white-out" original document parts before re-layering edited content.
-- **Native Vector Export:** Unlike raster-based editors, Document Engine V2 recompiles a clean, selectable, and searchable vector PDF using `pdf-lib`.
-- **Real-time Preview Engine:** Leverages Framer Motion for a fluid, high-fidelity editing experience.
+## 🚀 Core Features
 
-## 🛠 Technical Stack
+- **Reconstructive Vector Parsing:** Directly analyzes PDF command streams to identify exact coordinates, font metrics, and layer hierarchies.
+- **Intelligent OCR Fallback:** Integrated with `Tesseract.js` to handle scanned or "image-only" PDFs, automatically detecting text layers where native data is missing.
+- **Absolute Positioning Engine:** Drag-and-drop interface with 1:1 viewport-to-PDF point mapping for pixel-perfect alignment.
+- **Non-Destructive Editing:** Surgical replacement of text nodes using "Smart Masking" to seamlessly hide original content without affecting the document's vector integrity.
+- **Native PDF Export:** Compiles modifications back into a standard, searchable PDF document while maintaining original metadata and layout.
+- **Real-Time Render Matrix:** A high-performance preview system that renders documents at 3.0x scale for ultra-clear visibility during the editing phase.
 
-- **Framework:** React 19 (TypeScript)
-- **Build System:** Vite 7
-- **State Management:** Zustand (Single source of truth)
-- **PDF Core:** `pdfjs-dist` (Parsing) & `pdf-lib` (Export)
-- **Styling:** Tailwind CSS + Radix UI Primitives
-- **Animations:** Framer Motion
-- **Icons:** Lucide React
+## 🛠️ Technical Stack
 
-## 📂 Project Structure
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Framer Motion.
+- **Layout Parsing:** `PDF.js` (Custom Vector Matrix Implementation).
+- **OCR Engine:** `Tesseract.js`.
+- **Export Engine:** `PDF-lib` (Native Vector Composition).
+- **State Management:** Zustand.
 
-```text
-├── client/              # Frontend React application
-│   ├── src/
-│   │   ├── components/  # Modular UI & Layout components
-│   │   ├── pages/       # Core views (Editor, Upload)
-│   │   ├── hooks/       # Custom React logic
-│   │   └── lib/         # Utility functions
-├── server/              # Node.js backend (if applicable)
-├── shared/              # Shared constants and types
-└── package.json         # Project dependencies
-```
+## 📦 Installation & Setup
 
-## 🛠 Installation & Development
-
-### Prerequisites
-
-- **Node.js:** v18+ (Recommended v20+)
-- **pnpm:** v10+
-
-### Setup
-
-1. **Clone and Install:**
+1. **Clone & Install:**
    ```bash
    pnpm install
    ```
 
-2. **Environment Configuration:**
-   Create a `.env` file in the root directory (refer to `.env.example` if available).
-
-3. **Start Development Server:**
+2. **Development Mode:**
    ```bash
-   pnpm run dev
+   npm run dev
    ```
 
-## 👨‍💻 Author
+3. **Production Build:**
+   ```bash
+   npm run build
+   npm run start
+   ```
 
-Developed by **Oracle69 Systems**.
+## 📖 How it Works
 
-## 📜 License
+1. **Upload:** Process any PDF document.
+2. **Scan:** The engine performs a dual-pass scan (Vector + OCR) to identify editable nodes.
+3. **Surgically Edit:** Replace values, adjust font sizes, and toggle styles.
+4. **Compile:** Export a high-fidelity native PDF.
 
-MIT License. See `LICENSE` for details.
+## 🛡️ License
+
+MIT License. Developed by Oracle69 Systems.

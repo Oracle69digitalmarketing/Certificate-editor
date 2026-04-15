@@ -168,9 +168,9 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    port: 8080,
-    strictPort: true, // Use strictPort to ensure it doesn't fallback to another port
-    host: true,
+    port: 3000,
+    host: "0.0.0.0",
+    strictPort: true,
     allowedHosts: [
       ".manuspre.computer",
       ".manus.computer",

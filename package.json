@@ -1,5 +1,5 @@
 {
-  "name": "noun-certificate-editor",
+  "name": "surgical-pdf-engine",
   "version": "1.0.0",
   "author": "Oracle69 Systems",
   "type": "module",
@@ -66,6 +66,7 @@
     "streamdown": "^1.4.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
+    "tesseract.js": "^7.0.0",
     "vaul": "^1.1.2",
     "wouter": "^3.3.5",
     "zod": "^4.1.12",
