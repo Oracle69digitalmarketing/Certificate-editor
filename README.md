@@ -7,19 +7,25 @@ Surgical PDF Engine V2 is a high-precision document modification tool designed f
 ## 🚀 Core Features
 
 - **Reconstructive Vector Parsing:** Directly analyzes PDF command streams to identify exact coordinates, font metrics, and layer hierarchies.
-- **Intelligent OCR Fallback:** Integrated with `Tesseract.js` to handle scanned or "image-only" PDFs, automatically detecting text layers where native data is missing.
-- **Absolute Positioning Engine:** Drag-and-drop interface with 1:1 viewport-to-PDF point mapping for pixel-perfect alignment.
-- **Non-Destructive Editing:** Surgical replacement of text nodes using "Smart Masking" to seamlessly hide original content without affecting the document's vector integrity.
-- **Native PDF Export:** Compiles modifications back into a standard, searchable PDF document while maintaining original metadata and layout.
-- **Real-Time Render Matrix:** A high-performance preview system that renders documents at 3.0x scale for ultra-clear visibility during the editing phase.
+- **Hybrid OCR Engine:**
+  - **Browser-Side:** Fast, localized OCR using `Tesseract.js` with **Advanced Confidence Filtering** (>60%) to eliminate noise.
+  - **Server-Side (Advanced):** High-precision OCR using `ocrmypdf` with support for multiple engines:
+    - **Tesseract:** Reliable general-purpose OCR.
+    - **PaddleOCR:** Superior accuracy for stylized fonts and handwriting.
+    - **EasyOCR:** Optimized for complex layouts and diverse character sets.
+- **Paperless-ngx Bridge:** One-click synchronization to send edited documents directly to your document management system with preserved metadata.
 
 ## 🛠️ Technical Stack
 
-- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Framer Motion.
-- **Layout Parsing:** `PDF.js` (Custom Vector Matrix Implementation).
-- **OCR Engine:** `Tesseract.js`.
-- **Export Engine:** `PDF-lib` (Native Vector Composition).
-- **State Management:** Zustand.
+- **Frontend:** React 19, TypeScript, Vite, Tailwind CSS, Framer Motion, Zustand.
+- **Backend (OCR & API):** Python (Flask) wrapping `ocrmypdf` and `requests` for external integrations.
+- **System Dependencies:** `ghostscript`, `qpdf`, `tesseract-ocr`.
+
+## ⚙️ Configuration (Environment Variables)
+
+For Paperless-ngx integration, set the following variables in your environment or Docker container:
+- `PAPERLESS_URL`: Your Paperless instance URL (e.g., `https://paperless.example.com`).
+- `PAPERLESS_TOKEN`: Your API Secret Token.
 
 ## 📦 Installation & Setup
 
@@ -28,15 +34,18 @@ Surgical PDF Engine V2 is a high-precision document modification tool designed f
    pnpm install
    ```
 
-2. **Development Mode:**
+2. **Run via Docker (Recommended):**
    ```bash
-   npm run dev
+   docker build -t surgical-pdf-engine .
+   docker run -p 5001:5001 -e PAPERLESS_URL=... -e PAPERLESS_TOKEN=... surgical-pdf-engine
    ```
 
-3. **Production Build:**
+3. **Development Mode (Manual):**
    ```bash
-   npm run build
-   npm run start
+   # Start OCR service
+   python3 server/ocr_service.py
+   # Start Frontend
+   npm run dev
    ```
 
 ## 📖 How it Works

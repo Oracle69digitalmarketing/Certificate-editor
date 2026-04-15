@@ -1,0 +1,62 @@
+version: "3.4"
+
+services:
+  # --- SURGICAL PDF ENGINE ---
+  editor:
+    build: .
+    image: surgical-pdf-engine:latest
+    container_name: pdf-editor
+    ports:
+      - "5001:5001"
+    environment:
+      - PAPERLESS_URL=http://paperless-webserver:8000
+      - PAPERLESS_TOKEN=${PAPERLESS_TOKEN:-}
+    depends_on:
+      - paperless-webserver
+
+  # --- PAPERLESS-NGX STACK ---
+  paperless-broker:
+    image: docker.io/library/redis:7
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+
+  paperless-db:
+    image: docker.io/library/postgres:15
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: paperless
+
+  paperless-webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless-webserver
+    restart: unless-stopped
+    depends_on:
+      - paperless-db
+      - paperless-broker
+    ports:
+      - "8000:8000"
+    volumes:
+      - paperless-data:/usr/src/paperless/data
+      - paperless-media:/usr/src/paperless/media
+      - ./paperless/consume:/usr/src/paperless/consume
+      - ./paperless/export:/usr/src/paperless/export
+    environment:
+      PAPERLESS_REDIS: redis://paperless-broker:6379
+      PAPERLESS_DBHOST: paperless-db
+      PAPERLESS_DBNAME: paperless
+      PAPERLESS_DBUSER: paperless
+      PAPERLESS_DBPASS: paperless
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY:-change-this-to-a-long-random-string}
+      PAPERLESS_TIME_ZONE: America/New_York
+      PAPERLESS_OCR_LANGUAGE: eng
+
+volumes:
+  redisdata:
+  pgdata:
+  paperless-data:
+  paperless-media:

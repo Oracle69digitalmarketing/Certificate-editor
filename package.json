@@ -6,8 +6,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite --host",
+    "ocr": "python3 server/ocr_service.py",
+    "dev:all": "concurrently \"npm run dev\" \"npm run ocr\"",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
+    "start:all": "concurrently \"npm run start\" \"npm run ocr\"",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
     "format": "prettier --write ."
@@ -84,6 +87,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "add": "^2.0.6",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.2.1",
     "esbuild": "^0.25.0",
     "pnpm": "^10.15.1",
     "postcss": "^8.4.47",
