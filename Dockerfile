@@ -1,16 +1,27 @@
-# Stage 1: Build React frontend and Node.js backend
+# Stage 1: Build React frontend
 FROM node:20-alpine AS builder
+
+# Install pnpm globally
+RUN npm install -g pnpm
+
 WORKDIR /app
-COPY package*.json pnpm-lock.yaml* ./
-# Install all dependencies (frontend + backend)
-RUN npm install
+
+# Copy root package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
+
+# Copy the entire project
 COPY . .
-RUN npm run build
+
+# Build the app (Vite is configured to output to dist/public)
+RUN pnpm run build
 
 # Stage 2: Final Python image with Flask and ocrmypdf
 FROM python:3.11-slim-bookworm
 
-# Install system dependencies required by ocrmypdf and Tesseract
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript \
     qpdf \
@@ -33,15 +44,14 @@ RUN pip install --no-cache-dir -r server/requirements.txt
 # Copy Flask service code
 COPY server/ ./server/
 
-# Copy built files from stage 1 (Vite outputs to dist/public)
+# Copy built frontend static files from Stage 1
+# Vite outputs to dist/public based on your vite.config.ts
 COPY --from=builder /app/dist ./dist
 
-# Expose port for Flask
+# Environment variables
 EXPOSE 5001
-
-# Set environment variables
 ENV FLASK_ENV=production
 ENV PYTHONUNBUFFERED=1
 
-# Run the Flask app (which now also serves the frontend from dist/public)
+# Run the Flask app
 CMD ["python", "server/ocr_service.py"]
