@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Final Python image with Flask and ocrmypdf
-FROM python:3.11-slim-bookworm
+FROM python:3.12-slim-bookworm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
