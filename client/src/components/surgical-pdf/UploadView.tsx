@@ -33,7 +33,8 @@ export function UploadView() {
       formData.append("engine", ocrEngine);
 
       try {
-        const response = await fetch("http://localhost:5001/ocr", {
+        const apiBaseUrl = import.meta.env.VITE_OCR_API_URL || "http://localhost:5001";
+        const response = await fetch(`${apiBaseUrl}/ocr`, {
           method: "POST",
           body: formData,
         });

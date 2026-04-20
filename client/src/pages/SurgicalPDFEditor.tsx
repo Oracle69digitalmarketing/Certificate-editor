@@ -149,7 +149,8 @@ export default function SurgicalPDFEditor() {
       formData.append("metadata", JSON.stringify(metadata));
       formData.append("ocr_text", ocrText);
 
-      const response = await fetch("http://localhost:5001/paperless/upload", {
+      const apiBaseUrl = import.meta.env.VITE_OCR_API_URL || "http://localhost:5001";
+      const response = await fetch(`${apiBaseUrl}/paperless/upload`, {
         method: "POST",
         body: formData,
       });

@@ -21,6 +21,29 @@ Surgical PDF Engine V2 is a high-precision document modification tool designed f
 - **Backend (OCR & API):** Python (Flask) wrapping `ocrmypdf` and `requests` for external integrations.
 - **System Dependencies:** `ghostscript`, `qpdf`, `tesseract-ocr`.
 
+## ⚙️ System Dependencies
+
+The backend OCR service relies on several system-level binaries to process PDFs. Ensure these are installed on your host system or inside your container:
+
+- **Ghostscript (`gs`):** Required for PDF rendering and optimization.
+- **Tesseract OCR (`tesseract`):** The core engine for text recognition.
+- **qpdf (`qpdf`):** Used for structural PDF transformations.
+
+### Installation
+
+#### Debian/Ubuntu
+```bash
+sudo apt-get update && sudo apt-get install -y ghostscript tesseract-ocr qpdf
+```
+
+#### macOS (Homebrew)
+```bash
+brew install ghostscript tesseract qpdf
+```
+
+#### Docker
+The provided `Dockerfile` already handles these dependencies automatically.
+
 ## ⚙️ Configuration (Environment Variables)
 
 For Paperless-ngx integration, set the following variables in your environment or Docker container:
