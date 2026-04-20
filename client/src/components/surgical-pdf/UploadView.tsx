@@ -4,6 +4,9 @@ import { ShieldCheck, Upload, Loader2, Cpu, Zap } from "lucide-react";
 import { toast } from "sonner";
 import * as pdfjsLib from "pdfjs-dist";
 import Tesseract from "tesseract.js";
+
+// Initialize PDF.js Worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 import { useSurgicalPDFStore, EditableField } from "@/store/useSurgicalPDFStore";
 
 export function UploadView() {
