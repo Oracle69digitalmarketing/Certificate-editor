@@ -14,7 +14,7 @@ CORS(app)
 # Map engine names to ocrmypdf plugin names
 ENGINE_PLUGINS = {
     'tesseract': None,          # Default Tesseract (no plugin needed)
-    'paddle': 'ocrmypdf_paddleocr',
+    'paddle': 'ocrmypdf_paddleocr.plugin',
     'easyocr': 'ocrmypdf_easyocr'
 }
 
@@ -24,8 +24,9 @@ def extract_certificate_metadata(text):
 
     # Certificate Number (e.g., "Cert No: ABC-12345" or "Serial: 2025-001")
     cert_patterns = [
-        r'(?:Certificate|Cert|Serial)\s*(?:No|Number|ID)?[:\s#]*([A-Z0-9\-]+)',
-        r'Ref\s*No[:\s]*([A-Z0-9\-]+)'
+        r'(?:Certificate|Cert|Serial|Reg|Registration)\s+(?:No|Number|ID)?[:\s#]*([A-Z0-9\-]+)',
+        r'Ref\s*(?:No|Number)?[:\s#]*([A-Z0-9\-]+)',
+        r'ID\s*(?:No|Number)?[:\s#]*([A-Z0-9\-]+)'
     ]
     for pattern in cert_patterns:
         match = re.search(pattern, text, re.IGNORECASE)
@@ -62,8 +63,10 @@ def extract_certificate_metadata(text):
 
     # Recipient Name
     name_patterns = [
-        r'(?:awarded to|presented to|recipient|certifies that)\s*[:\n]*([A-Z][a-z]+ [A-Z][a-z]+)',
-        r'This is to certify that\s+([A-Z][a-z]+ [A-Z][a-z]+)'
+        r'(?:awarded to|presented to|recipient|certifies that|granted to)\s*[:\s]*([A-Z][a-z\']+(?:\s+[A-Z][a-z\']+){1,3}?)(?=\s+has|\s+for|\s+in|\.|$)',
+        r'This is to certify that\s+([A-Z][a-z\']+(?:\s+[A-Z][a-z\']+){1,3}?)(?=\s+has|\s+for|\s+in|\.|$)',
+        r'Proudly presented to\s+([A-Z][a-z\']+(?:\s+[A-Z][a-z\']+){1,3}?)(?=\s+has|\s+for|\s+in|\.|$)',
+        r'(?:awarded to|presented to|recipient|certifies that|granted to)\s*[:\s]*([A-Z][a-z\']+(?:\s+[A-Z][a-z\']+){1,3})'
     ]
     for pattern in name_patterns:
         match = re.search(pattern, text, re.IGNORECASE)
@@ -123,11 +126,11 @@ def upload_to_paperless():
     
     extracted = extract_certificate_metadata(ocr_text) if ocr_text else {}
     
-    PAPERLESS_URL = os.environ.get('PAPERLESS_URL')
+    PAPERLESS_URL = os.environ.get('PAPERLESS_URL', '').rstrip('/')
     PAPERLESS_TOKEN = os.environ.get('PAPERLESS_TOKEN')
     
     if not PAPERLESS_URL or not PAPERLESS_TOKEN:
-        return jsonify({'error': 'Paperless configuration missing'}), 500
+        return jsonify({'error': 'Paperless configuration missing. Please set PAPERLESS_URL and PAPERLESS_TOKEN environment variables.'}), 500
 
     try:
         headers = {'Authorization': f'Token {PAPERLESS_TOKEN}'}
