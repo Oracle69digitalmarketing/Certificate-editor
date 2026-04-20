@@ -4,6 +4,12 @@ import { ShieldCheck, Upload, Loader2, Cpu, Zap } from "lucide-react";
 import { toast } from "sonner";
 import * as pdfjsLib from "pdfjs-dist";
 import Tesseract from "tesseract.js";
+
+// Initialize PDF.js Worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.mjs",
+  import.meta.url,
+).toString();
 import { useSurgicalPDFStore, EditableField } from "@/store/useSurgicalPDFStore";
 
 export function UploadView() {
@@ -33,7 +39,8 @@ export function UploadView() {
       formData.append("engine", ocrEngine);
 
       try {
-        const response = await fetch("http://localhost:5001/ocr", {
+        const apiBaseUrl = import.meta.env.VITE_OCR_API_URL || "http://localhost:5001";
+        const response = await fetch(`${apiBaseUrl}/ocr`, {
           method: "POST",
           body: formData,
         });
